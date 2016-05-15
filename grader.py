@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import csv
 import json
+from scipy import stats
 
 ANSWER_KEY = [
     "The student sleeps like a Person",
@@ -35,15 +36,31 @@ if __name__ == "__main__":
             answers[2] = answers[2]["code"] if isinstance(answers[2], dict) else answers[2]
             posttest_answers[user_id] = answers
 
+        pre_score_list = []
+        post_score_list = []
         for user_id, post_answers in posttest_answers.items():
             pre_answers = pretest_answers.get(user_id)
             if not pre_answers:
-                print "No pretest for " + user_id
+                print "\nNo pretest for " + user_id
                 continue
 
             pre_score = sum(1 for response, truth in zip(pre_answers, ANSWER_KEY) if response == truth)
             post_score = sum(1 for response, truth in zip(post_answers, ANSWER_KEY) if response == truth)
 
+            pre_score_list.append(pre_score)
+            post_score_list.append(post_score)
+
+            print ""
             print("User ID:", user_id)
             print("Pretest score:", pre_score)
             print("Posttest score:", post_score)
+
+        t_value, p_value = stats.ttest_rel(post_score_list, pre_score_list)
+
+        print "\n==============================\n"
+        print "Pretest average: " + str(reduce(lambda x, y: x + y, pre_score_list)/float(len(pre_score_list)))
+        print "Posttest average: " + str(reduce(lambda x, y: x + y, post_score_list)/float(len(post_score_list)))
+        print "\nPaired t-test results"
+        print "t-value: " + str(t_value)
+        print "p-value: " + str(p_value)
+        print ""
