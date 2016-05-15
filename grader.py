@@ -5,7 +5,7 @@ import json
 ANSWER_KEY = [
     "The student sleeps like a Person",
     "tweety = Bird()",
-    "robot.turnLeft()\\nrobot.moveForward()\\nrobot.moveForward()"
+    "robot.turnLeft()\nrobot.moveForward()\nrobot.moveForward()",
     "awooo!",
     "(none of these cause an error)",
 ]
@@ -15,9 +15,10 @@ if __name__ == "__main__":
     posttest_answers = {}
 
     with open("pretest.tsv") as pretest, open("posttest.tsv") as posttest:
+
         pretest = csv.reader(pretest, delimiter="\t")
         posttest = csv.reader(posttest, delimiter="\t")
-
+        
         # Discard the headers
         next(pretest)
         next(posttest)
@@ -31,12 +32,13 @@ if __name__ == "__main__":
         for row in posttest:
             user_id = row[0]
             answers = json.loads(row[1])
+            answers[2] = answers[2]["code"] if isinstance(answers[2], dict) else answers[2]
             posttest_answers[user_id] = answers
 
         for user_id, post_answers in posttest_answers.items():
             pre_answers = pretest_answers.get(user_id)
             if not pre_answers:
-                print("No pretest for", user_id)
+                print "No pretest for " + user_id
                 continue
 
             pre_score = sum(1 for response, truth in zip(pre_answers, ANSWER_KEY) if response == truth)
