@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import csv
 import json
+import math
 from scipy import stats
 
 ANSWER_KEY = [
@@ -72,13 +73,19 @@ if __name__ == "__main__":
             print("Posttest score:", post_score)
 
         t_value, p_value = stats.ttest_rel(post_score_list, pre_score_list)
+        _, _, pre_mean, pre_sample_variance, _, _ = stats.describe(pre_score_list)
+        _, _, post_mean, post_sample_variance, _, _ = stats.describe(post_score_list)
 
         print "\n==============================\n"
-        print "Pretest average: " + str(reduce(lambda x, y: x + y, pre_score_list)/float(len(pre_score_list)))
-        print "Posttest average: " + str(reduce(lambda x, y: x + y, post_score_list)/float(len(post_score_list)))
-        print "'I enjoyed this game' average: " + str(reduce(lambda x, y: x + y, enjoyed)/float(len(enjoyed)))
-        print "'I knew OOP before playing' average: " + str(reduce(lambda x, y: x + y, knew_oop_before)/float(len(knew_oop_before)))
-        print "'I knew OOP better after playing' average: " + str(reduce(lambda x, y: x + y, knew_oop_better)/float(len(knew_oop_better)))
+        print "Pretest sample mean: " + str(pre_mean)
+        print "Pretest sample SD: " + str(math.sqrt(pre_sample_variance))
+        print "Posttest sample mean: " + str(post_mean)
+        print "Posttest sample SD: " + str(math.sqrt(post_sample_variance))
+
+        print ""
+        print "'I enjoyed this game' average: " + str(stats.describe(enjoyed).mean)
+        print "'I knew OOP before playing' average: " + str(stats.describe(knew_oop_before).mean)
+        print "'I knew OOP better after playing' average: " + str(stats.describe(knew_oop_better).mean)
         print "\nPaired t-test results"
         print "t-value: " + str(t_value)
         print "p-value: " + str(p_value)
