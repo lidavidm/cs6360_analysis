@@ -11,6 +11,14 @@ ANSWER_KEY = [
     "(none of these cause an error)",
 ]
 
+OPINION_MAP = {
+    "Strongly Agree": 2,
+    "Agree": 1,
+    "Neutral": 0,
+    "Disagree": -1,
+    "Strongly Disagree": -2
+}
+
 if __name__ == "__main__":
     pretest_answers = {}
     posttest_answers = {}
@@ -38,6 +46,10 @@ if __name__ == "__main__":
 
         pre_score_list = []
         post_score_list = []
+        enjoyed = []
+        knew_oop_before = []
+        knew_oop_better = []
+        
         for user_id, post_answers in posttest_answers.items():
             pre_answers = pretest_answers.get(user_id)
             if not pre_answers:
@@ -49,6 +61,10 @@ if __name__ == "__main__":
 
             pre_score_list.append(pre_score)
             post_score_list.append(post_score)
+            
+            enjoyed.append(OPINION_MAP[post_answers[5]])
+            knew_oop_before.append(OPINION_MAP[post_answers[6]])
+            knew_oop_better.append(OPINION_MAP[post_answers[7]])
 
             print ""
             print("User ID:", user_id)
@@ -60,6 +76,9 @@ if __name__ == "__main__":
         print "\n==============================\n"
         print "Pretest average: " + str(reduce(lambda x, y: x + y, pre_score_list)/float(len(pre_score_list)))
         print "Posttest average: " + str(reduce(lambda x, y: x + y, post_score_list)/float(len(post_score_list)))
+        print "'I enjoyed this game' average: " + str(reduce(lambda x, y: x + y, enjoyed)/float(len(enjoyed)))
+        print "'I knew OOP before playing' average: " + str(reduce(lambda x, y: x + y, knew_oop_before)/float(len(knew_oop_before)))
+        print "'I knew OOP better after playing' average: " + str(reduce(lambda x, y: x + y, knew_oop_better)/float(len(knew_oop_better)))
         print "\nPaired t-test results"
         print "t-value: " + str(t_value)
         print "p-value: " + str(p_value)
