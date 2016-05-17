@@ -23,8 +23,9 @@ if __name__ == "__main__":
             print("Mean completion time (seconds):", mean)
             print("Sample variance completion time:", sample_variance)
 
-        print("Level", ",", "Mean Completion Time (minutes)")
+        print("x,y,yerr")
         for quest_id in sorted(level_completion_times):
             completion_times = level_completion_times[quest_id]
             _, _, mean, sample_variance, _, _ = stats.describe(completion_times)
-            print(quest_id + 1, ",", mean / 60.0)
+            std_error = stats.sem(completion_times)
+            print(quest_id + 1, ",", mean / 60.0, ",", std_error, sep="")
