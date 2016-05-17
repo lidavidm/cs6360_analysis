@@ -47,9 +47,18 @@ if __name__ == "__main__":
 
         pre_score_list = []
         post_score_list = []
+        
         enjoyed = []
         knew_oop_before = []
         knew_oop_better = []
+
+        wrong_to_right = [0, 0, 0, 0, 0]
+        right_to_wrong = [0, 0, 0, 0, 0]
+        wrong_to_wrong = [0, 0, 0, 0, 0]
+        right_to_right = [0, 0, 0, 0, 0]
+
+        pretest_right = [0, 0, 0, 0, 0]
+        posttest_right = [0, 0, 0, 0, 0]
         
         for user_id, post_answers in posttest_answers.items():
             pre_answers = pretest_answers.get(user_id)
@@ -67,6 +76,26 @@ if __name__ == "__main__":
             knew_oop_before.append(OPINION_MAP[post_answers[6]])
             knew_oop_better.append(OPINION_MAP[post_answers[7]])
 
+            for i in range(len(pre_answers)):
+
+                ans = ANSWER_KEY[i]
+                pre = pre_answers[i]
+                post = post_answers[i]
+
+                if pre != ans and post != ans:
+                    wrong_to_wrong[i] += 1
+                elif pre != ans and post == ans:
+                    wrong_to_right[i] += 1
+                elif pre == ans and post != ans:
+                    right_to_wrong[i] += 1
+                elif pre == ans and post == ans:
+                    right_to_right[i] += 1
+
+                if pre_answers[i] == ANSWER_KEY[i]:
+                    pretest_right[i] += 1
+                if post_answers[i] == ANSWER_KEY[i]:
+                    posttest_right[i] += 1
+
             print ""
             print("User ID:", user_id)
             print("Pretest score:", pre_score)
@@ -77,6 +106,7 @@ if __name__ == "__main__":
         _, _, post_mean, post_sample_variance, _, _ = stats.describe(post_score_list)
 
         print "\n==============================\n"
+        print "n = " + str(len(post_score_list)) + "\n"
         print "Pretest sample mean: " + str(pre_mean)
         print "Pretest sample SD: " + str(math.sqrt(pre_sample_variance))
         print "Posttest sample mean: " + str(post_mean)
@@ -86,7 +116,21 @@ if __name__ == "__main__":
         print "'I enjoyed this game' average: " + str(stats.describe(enjoyed).mean)
         print "'I knew OOP before playing' average: " + str(stats.describe(knew_oop_before).mean)
         print "'I knew OOP better after playing' average: " + str(stats.describe(knew_oop_better).mean)
-        print "\nPaired t-test results"
+
+        print ""
+        print "Paired t-test results"
         print "t-value: " + str(t_value)
         print "p-value: " + str(p_value)
+
+        # print ""
+        # print str(pretest_right) + "\tCorrect on pretest"
+        # print str(posttest_right) + "\tCorrect on posttest\n"
+        # print pre_score_list
+        # print post_score_list
+
         print ""
+        print str(wrong_to_wrong) + "\t\tWrong, Wrong"
+        print str(wrong_to_right) + "\t\tWrong, Right"
+        print str(right_to_wrong) + "\t\tRight, Wrong"
+        print str(right_to_right) + "\tRight, Right"
+        
